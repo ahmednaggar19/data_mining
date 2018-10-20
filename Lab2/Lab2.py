@@ -42,8 +42,8 @@ plot_X_data(segmentation_data, figure_handler)
 ## Preprocessing
 
 # 1) Normalization)
-# segmentation_data = normalize_min_max(segmentation_data)
-# plot_X_data(segmentation_data, figure_handler)
+segmentation_data = normalize_min_max(segmentation_data)
+plot_X_data(segmentation_data, figure_handler)
 
 
 segmentation_data = normalize_z_score(segmentation_data)

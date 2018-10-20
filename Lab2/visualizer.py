@@ -62,8 +62,12 @@ def plot_histograms(X, Y, figure_handler, bins) :
 def normalize_min_max(dataframe):
 	X = dataframe.loc[:, dataframe.columns != 'CLASS']
 	scaler = preprocessing.MinMaxScaler()
-	scaled = scaler.fit_transform(X.values)
-	dataframe.loc[:, dataframe.columns != 'CLASS'] = (pd.DataFrame(data=scaled))
+	# scaled = scaler.fit_transform(X.values)
+	cols = list(dataframe.columns)
+	cols.remove('CLASS')
+	for column in cols:
+		dataframe[column] = scaler.fit_transform(dataframe[column].values.reshape(-1, 1))
+	# dataframe.loc[:, dataframe.columns != 'CLASS'] = (pd.DataFrame(data=scaled))
 	return dataframe
 
 def normalize_z_score(dataframe):
