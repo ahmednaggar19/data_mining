@@ -76,3 +76,14 @@ def normalize_z_score(dataframe):
 	for column in cols:
 		dataframe[column] = (dataframe[column] - dataframe[column].mean()) / dataframe[column].std(ddof=0)
 	return dataframe
+
+def project_pca(dataframe, n_components):
+	X = dataframe.loc[:, dataframe.columns != 'CLASS']
+	Y = dataframe.loc[:, dataframe.columns == 'CLASS']
+
+	pca = PCA(n_components=n_components)
+	pca.fit_transform(X.values)
+
+	principal_df = pd.Dataframe(data=dataframe,
+		columns=['PC' + str(i) for i in range(n_components)])
+	return pd.concat([principalDf, Y], axis=1)

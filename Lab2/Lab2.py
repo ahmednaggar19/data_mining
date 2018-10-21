@@ -37,17 +37,24 @@ plot_X_data(segmentation_data, figure_handler)
 # 3) Histograms
 # bins_values = [5, 10, 12]
 # for bins_count in bins_values:
-# 	plot_histograms(segmentation_data.loc[:, segmentation_data.columns != 'CLASS'], segmentation_data.loc[:, segmentation_data.columns == 'CLASS'], figure_handler, bins_count)
+	# plot_histograms(segmentation_data.loc[:, segmentation_data.columns != 'CLASS'], segmentation_data.loc[:, segmentation_data.columns == 'CLASS'], figure_handler, bins_count)
 
 ## Preprocessing
 
 # 1) Normalization)
-segmentation_data = normalize_min_max(segmentation_data)
-plot_X_data(segmentation_data, figure_handler)
+# segmentation_data = normalize_min_max(segmentation_data)
+# plot_X_data(segmentation_data, figure_handler)
 
 
 segmentation_data = normalize_z_score(segmentation_data)
 plot_X_data(segmentation_data, figure_handler)
 
 
+# 2) Dimensionality Reduction
+# PCA
+n_components = [2]
+for n_comp in n_components:
+	principal = project_pca(segmentation_data, n_components=n_comp)
+	plot_X_data(principal, figure_handler)
+	
 plt.show()
