@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from visualizer import *
 
-# loading datasets and appending the first to the second.
+# Loading datasets and appending the first to the second.
 training_data = pd.read_csv('segmentation.data')
 test_data = pd.read_csv('segmentation.test')
 segmentation_data = training_data.append(test_data)
@@ -24,7 +24,7 @@ figure_handler = Figures_handler()
 segmentation_data = segmentation_data.sort_values(['CLASS'])
 
 # Plot X_data before any normalization
-plot_X_data(segmentation_data, figure_handler)
+# plot_X_data(segmentation_data, figure_handler)
 
 ## Visualization
 
@@ -42,19 +42,35 @@ plot_X_data(segmentation_data, figure_handler)
 ## Preprocessing
 
 # 1) Normalization)
-# segmentation_data = normalize_min_max(segmentation_data)
+segmentation_data = normalize_min_max(segmentation_data)
 # plot_X_data(segmentation_data, figure_handler)
 
 
-segmentation_data = normalize_z_score(segmentation_data)
-plot_X_data(segmentation_data, figure_handler)
+# segmentation_data = normalize_z_score(segmentation_data)
+# plot_X_data(segmentation_data, figure_handler)
 
 
 # 2) Dimensionality Reduction
 # PCA
-n_components = [2]
-for n_comp in n_components:
-	principal = project_pca(segmentation_data, n_components=n_comp)
-	plot_X_data(principal, figure_handler)
-	
+# NOTICE: This algorithm works with z-score normalized data
+# n_components = [1, 2, 4, 8, 16, 19]
+# variance_ratios = []
+# for n_comp in n_components:
+# 	principal, var_ratio = project_pca(segmentation_data, n_components=n_comp)
+# 	variance_ratios += [sum(var_ratio)]
+# 	plot_pearsons_matrix(principal.loc[:, principal.columns != 'CLASS'], figure_handler)
+
+# print('\n---------------------------PCA---------------------------')
+# for i in range(len(n_components)):
+# 	print("#components: " + str(n_components[i]) + "\t\t" + "variance ratio: "
+# 		+ str(variance_ratios[i]))
+
+# Feature Selection
+# KBest
+# NOTICE: This algorithm works with min-max normalized data
+k = [4, 8, 16, 19]
+for k_ in k:
+	k_best = select_k_best(segmentation_data, k_)
+	plot_pearsons_matrix(k_best.loc[:, k_best.columns != 'CLASS'], figure_handler)
+
 plt.show()

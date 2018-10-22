@@ -6,6 +6,7 @@ from sklearn import datasets
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_selection import SelectKBest, chi2
 from scipy.spatial.distance import cosine
 import numpy as np
 import pandas as pd
@@ -71,19 +72,24 @@ def normalize_min_max(dataframe):
 	return dataframe
 
 def normalize_z_score(dataframe):
-	cols = list(dataframe.columns)
-	cols.remove('CLASS')
-	for column in cols:
-		dataframe[column] = (dataframe[column] - dataframe[column].mean()) / dataframe[column].std(ddof=0)
-	return dataframe
+	scaler = preprocessing.StandardScaler()
+	dataframe = dataframe.drop(columns=['CLASS'])
+	scaled = scaler.fit_transform(dataframe)
+	return pd.DataFrame(scaled, columns=dataframe.columns)
 
 def project_pca(dataframe, n_components):
 	X = dataframe.loc[:, dataframe.columns != 'CLASS']
-	Y = dataframe.loc[:, dataframe.columns == 'CLASS']
 
 	pca = PCA(n_components=n_components)
-	pca.fit_transform(X.values)
+	values_transform = pca.fit_transform(X.values)
 
-	principal_df = pd.Dataframe(data=dataframe,
-		columns=['PC' + str(i) for i in range(n_components)])
-	return pd.concat([principalDf, Y], axis=1)
+	principal_df = pd.DataFrame(data=values_transform, columns=['PC' + str(i) for i in range(n_components)])
+	return principal_df, pca.explained_variance_ratio_
+  
+def select_k_best(dataframe, k):
+	X = dataframe.loc[:, dataframe.columns != 'CLASS']
+	Y = dataframe.loc[:, dataframe.columns == 'CLASS']
+	k_best_transform = SelectKBest(chi2, k).fit_transform(X.values, Y.values)
+
+	k_best_df = pd.DataFrame(data=k_best_transform, columns=['Feature' + str(i) for i in range(k)])
+	return k_best_df
