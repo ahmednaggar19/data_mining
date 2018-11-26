@@ -2,5 +2,5 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
-./datasets/magic04.data
-./datasets/magic04.names
+datasets/magic04.data
+datasets/magic04.names
